@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
@@ -31,6 +32,7 @@ public class UserModel implements Serializable {
     private UUID id;
 
     @Column(unique = true, nullable = false, length = 50)
+    @NotBlank
     private String username;
 
     @Column(unique = true, nullable = false, length = 50)
