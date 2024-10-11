@@ -6,8 +6,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Builder
 public record UserDto(
         @JsonView(UserView.RegistrationPost.class)
         @NotBlank(groups = UserView.RegistrationPost.class)
@@ -16,7 +18,7 @@ public record UserDto(
         String username,
 
         @JsonView(UserView.RegistrationPost.class)
-        @NotBlank(groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class})
+        @NotBlank(groups = {UserView.RegistrationPost.class})
         @Email(groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class})
         String email,
 
