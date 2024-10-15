@@ -5,7 +5,7 @@ import com.ead.authuser.models.dtos.UserDto;
 import com.ead.authuser.services.UserService;
 import com.ead.authuser.specifications.SpecificationTemplate;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,20 +18,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<Page<UserModel>> getAllUsers(
             SpecificationTemplate.UserSpec spec,
             @PageableDefault(page = 0, size = 10, sort = "fullName", direction = Sort.Direction.ASC) Pageable pageable) {
-
         Page<UserModel> userModelPage = userService.findall(spec, pageable);
+
+        if(userModelPage.hasContent()) {
+            userModelPage.forEach(user -> {
+                user.add(linkTo(methodOn(UserController.class).getUserById(user.getId())).withSelfRel());
+            });
+        }
         return ResponseEntity.status(HttpStatus.OK).body(userModelPage);
     }
 
@@ -39,6 +47,7 @@ public class UserController {
     public ResponseEntity<Object> getUserById(@PathVariable(value = "userId") UUID id) {
        Optional<UserModel> userModelOptional = userService.findById(id);
        if (userModelOptional.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+
        return ResponseEntity.status(HttpStatus.OK).body(userModelOptional.get());
    }
 

@@ -10,17 +10,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public UserModel toModel(final UserDto userDto) {
+    public UserModel toModel(final UserDto user) {
         return UserModel.builder()
-                .username(userDto.username())
-                .email(userDto.email())
-                .password(userDto.password())
-                .fullName(userDto.fullName())
-                .phoneNumber(userDto.phoneNumber())
-                .cpf(userDto.cpf())
-                .imageUrl(userDto.imageUrl())
+                .username(user.username())
+                .email(user.email())
+                .password(user.password())
+                .fullName(user.fullName())
+                .phoneNumber(user.phoneNumber())
+                .cpf(user.cpf())
+                .imageUrl(user.imageUrl())
                 .userStatus(UserStatus.ACTIVE)
                 .userType(UserType.STUDENT)
+                .build();
+    }
+
+    public UserDto toDto(final UserModel user) {
+        return UserDto.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .fullName(user.getFullName())
+                .phoneNumber(user.getPhoneNumber())
+                .cpf(user.getCpf())
+                .imageUrl(user.getImageUrl())
                 .build();
     }
 
